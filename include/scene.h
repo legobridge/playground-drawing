@@ -6,19 +6,20 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
 #include "shader.h"
+#include "model.h"
 
 class Scene
 {
 public:
 
 	// Screen dimensions
-	float SCR_W;
-	float SCR_H;
+	const float SCR_W = 1366.0f;
+	const float SCR_H = 768.0f;
 
 	// World dimensions
-	float WORLD_W;
-	float WORLD_H;
-	float WORLD_D;
+	const float WORLD_W = 160.0f;
+	const float WORLD_H = 90.0f;
+	const float WORLD_D = 200.0f;
 
 	// Pointer to a Shader object
 	Shader* myShader;
@@ -28,10 +29,6 @@ public:
 
 	// Base camera movement speed
 	const float CAMERA_SPEED = 1.5f;
-
-	// Time between frames
-	float lastFrame;
-	float deltaTime;
 
 	// Euler angles
 	float pitch;
@@ -48,6 +45,9 @@ public:
 
 	// Projection matrix
 	glm::mat4 projection;
+
+	// Model
+	Model* myModel;
 
 	// Constructor
 	Scene();
@@ -76,7 +76,7 @@ public:
 	// Roll to the right
 	void rollRight();
 
-	void drawObject(std::vector<float> vertexVector, glm::mat4 model, std::vector<float> colorVector);
+	void drawObject(std::vector<Vertex> vertices, std::vector<unsigned int> indices, glm::mat4 model, std::vector<float> colorVector);
 
 	// Call rendering functions for all the pre-computed objects
 	void drawObjects();

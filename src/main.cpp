@@ -1,4 +1,4 @@
-// Main Source File for * Drawing in OpenGL
+// Main Source File for drawing a playground in OpenGL
 // Authors -  Asutosh Sistla, Kushal Agrawal, Suchit Kar
 // Date of Completion - 
 
@@ -80,7 +80,6 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
 // **************************************
 // ********** Mouse Processing **********
-// - Esc key closes the window
 // - Mouse Up
 // - Mouse Down
 // - Mouse Left
@@ -114,8 +113,8 @@ bool initializeOpenGL()
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	// Window (default: 768p fullscreen) and context creation
-	window = glfwCreateWindow(SCR_W, SCR_H, WINDOW_TITLE, glfwGetPrimaryMonitor(), NULL);
+	// Window (default: 768p fullscreen) and context creationglfwGetPrimaryMonitor()
+	window = glfwCreateWindow(SCR_W, SCR_H, WINDOW_TITLE, NULL, NULL);
 	if (!window)
 	{
 		cout << "Window or context creation failed" << endl;
@@ -183,7 +182,7 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// Draw objects
-		myScene -> drawObjects();
+		myScene->drawObjects();
 
 		// ****** End Rendering Commands ******
 

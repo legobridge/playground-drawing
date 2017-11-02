@@ -1,3 +1,4 @@
+#include <iostream>
 #include "glad/glad.h"
 #include "scene.h"
 
@@ -6,32 +7,21 @@ using namespace std;
 // Constructor definition
 Scene::Scene()
 {
-
-	SCR_W = 1366.0f;
-	SCR_H = 768.0f;
-
-	WORLD_W = 160.0f;
-	WORLD_H = 90.0f;
-	WORLD_D = 90.0f;
-
 	// Build and compile shaders
 	myShader = new Shader("../src/shader/vertex.shader", "../src/shader/fragment.shader");
 
 	// Use the compiled shader program
-	myShader -> use();
+	myShader->use();
 
 	// Generate and bind vertex array object
 	glGenVertexArrays(1, &VAO);
 	glBindVertexArray(VAO);
 
-	deltaTime = 0.0f;
-	lastFrame = 0.0f;
-
 	pitch = 0.0f;
 	yaw = -90.0f;
 	roll = 0.0f;
 	
-	cameraPos = glm::vec3(0.0f, 0.0f, 30.0f);
+	cameraPos = glm::vec3(0.0f, 10.0f, 30.0f);
 	cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 	cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 
@@ -39,6 +29,8 @@ Scene::Scene()
 
 	// projection = glm::ortho(-WORLD_W / 2, WORLD_W / 2, -WORLD_H / 2, WORLD_H / 2, 0.1f, WORLD_D);
 	projection = glm::perspective(glm::radians(45.0f), SCR_W / SCR_H, 0.1f, WORLD_D);
+
+	myModel = new Model("../model/spiral-slide/spiral-slide.obj");
 }
 
 // Destructor definition
@@ -109,25 +101,26 @@ void Scene::rollRight()
 }
 
 // Draw object from arguments
-void Scene::drawObject(vector<float> vertexVector, glm::mat4 model, vector<float> colorVector)
+void Scene::drawObject(vector<Vertex> vertices, vector<unsigned int> indices, glm::mat4 model, vector<float> colorVector)
 {
-	float* v = new float[vertexVector.size()];
-	for (size_t i = 0; i < vertexVector.size(); i++)
-	{
-		v[i] = vertexVector[i];
-	}
-
-	unsigned int VBO;
+	unsigned int VBO, EBO;
 	glGenBuffers(1, &VBO);
+	glGenBuffers(1, &EBO);
 
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * vertexVector.size(), v, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
+
 	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
 
-	unsigned int modelLoc = glGetUniformLocation(myShader -> ID, "model");
-	unsigned int viewLoc = glGetUniformLocation(myShader -> ID, "view");
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Normal));
+
+	unsigned int modelLoc = glGetUniformLocation(myShader->ID, "model");
+	unsigned int viewLoc = glGetUniformLocation(myShader->ID, "view");
 	unsigned int projectionLoc = glGetUniformLocation(myShader->ID, "projection");
 	unsigned int myColorLoc = glGetUniformLocation(myShader->ID, "myColor");
 
@@ -138,78 +131,26 @@ void Scene::drawObject(vector<float> vertexVector, glm::mat4 model, vector<float
 	glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 	glUniform3f(myColorLoc, colorVector[0], colorVector[1], colorVector[2]);
 
-	glDrawArrays(GL_TRIANGLES, 0, 36);
+	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 
 	glDeleteBuffers(1, &VBO);
-	delete [] v;
+	glDeleteBuffers(1, &EBO);
 }
 
 // Call rendering functions for all the pre-computed objects
 void Scene::drawObjects()
 {
-	vector<float> vertices1 = {
-		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-		0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-		0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-		0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-
-		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-		0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-		0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-		0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-		-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
-		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
-	};
-	vector<float> vertices2 = {
-		0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-		0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-		0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-		0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-		0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-		0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-		-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-		-0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-		-0.5f,  0.5f,  0.5f,  1.0f, 0.0f
-	};
-	vector<float> vertices3 = {
-
-		-0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
-		0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
-		0.5f, 0.5f, 0.5f, 1.0f, 1.0f,
-		0.5f, 0.5f, 0.5f, 1.0f, 1.0f,
-		-0.5f, 0.5f, 0.5f, 0.0f, 1.0f,
-		-0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
-
-		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-		0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
-		0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-		0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f
-	};
-
-	glm::mat4 model = glm::mat4(1.0f);
-	model = glm::translate(model, glm::vec3(10.0f, 0.0f, 0.0f));
-	model = glm::rotate(model, glm::radians(-45.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-	model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
-	vector<float> color1 = { 0.0f, 0.5f, 1.0f };
-	vector<float> color2 = { 1.0f, 0.5f, 0.4f };
-	vector<float> color3 = { 0.3f, 1.0f, 0.4f };
-	drawObject(vertices1, model, color1);
-	drawObject(vertices2, model, color2);
-	drawObject(vertices3, model, color3);
-
-	model = glm::mat4(1.0f);
-	model = glm::translate(model, glm::vec3(-10.0f, 0.0f, 0.0f));
-	model = glm::rotate(model, glm::radians(45.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-	model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
-	drawObject(vertices1, model, color1);
-	drawObject(vertices2, model, color2);
-	drawObject(vertices3, model, color3);
+	vector<vector<float>> colors(1);
+	colors[0].resize(3);
+	for (unsigned int i = 0; i < myModel->meshes.size(); i++)
+	{
+		colors[0][i % 3] = 1.0f;
+		colors[0][(i + 1) % 3] = 0.0f;
+		colors[0][(i + 2) % 3] = 0.0f;
+		glm::mat4 model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, -30.0f));
+		model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(5.0f, 5.0f, 5.0f));
+		drawObject(myModel->meshes[i].vertices, myModel->meshes[i].indices, model, colors[0]);
+	}
 }
