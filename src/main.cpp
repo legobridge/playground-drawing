@@ -76,6 +76,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	{
 		myScene->rollRight();
 	}
+	// printf("%f %f %f\n", myScene->cameraPos.x, myScene->cameraPos.y, myScene->cameraPos.z);
 }
 
 // **************************************

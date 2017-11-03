@@ -7,6 +7,8 @@
 #include "glm/gtc/type_ptr.hpp"
 #include "shader.h"
 #include "model.h"
+#include "path.h"
+#include "bench.h"
 
 class Scene
 {
@@ -17,9 +19,9 @@ public:
 	const float SCR_H = 768.0f;
 
 	// World dimensions
-	const float WORLD_W = 160.0f;
-	const float WORLD_H = 90.0f;
-	const float WORLD_D = 200.0f;
+	const float WORLD_W = 3000.0f;
+	const float WORLD_H = 1000.0f;
+	const float WORLD_D = 2000.0f;
 
 	// Pointer to a Shader object
 	Shader* myShader;
@@ -28,7 +30,7 @@ public:
 	unsigned int VAO;
 
 	// Base camera movement speed
-	const float CAMERA_SPEED = 1.5f;
+	const float CAMERA_SPEED = 10.0f;
 
 	// Euler angles
 	float pitch;
@@ -46,8 +48,17 @@ public:
 	// Projection matrix
 	glm::mat4 projection;
 
-	// Model
-	Model* myModel;
+	// Model of slide (made in Blender)
+	Model* slideModel;
+
+	// Path object
+	Path* pathSegments;
+
+	// Vector of bench objects
+	std::vector<Bench*> benches;
+
+	// Vector of colors
+	std::vector<glm::vec3> colors;
 
 	// Constructor
 	Scene();
@@ -76,7 +87,14 @@ public:
 	// Roll to the right
 	void rollRight();
 
-	void drawObject(std::vector<Vertex> vertices, std::vector<unsigned int> indices, glm::mat4 model, std::vector<float> colorVector);
+	// Draw an object using arguments
+	void drawObject(Mesh mesh, glm::mat4 model, glm::vec3 colorVector);
+
+	// Draw the paths
+	void drawPaths();
+
+	// Draw the benches
+	void drawBenches();
 
 	// Call rendering functions for all the pre-computed objects
 	void drawObjects();

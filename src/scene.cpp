@@ -1,6 +1,7 @@
 #include <iostream>
 #include "glad/glad.h"
 #include "scene.h"
+#include "shape.h"
 
 using namespace std;
 
@@ -21,16 +22,41 @@ Scene::Scene()
 	yaw = -90.0f;
 	roll = 0.0f;
 	
-	cameraPos = glm::vec3(0.0f, 10.0f, 30.0f);
-	cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+	cameraPos = glm::vec3(0.0f, 160.0f, 1000.0f);
+	cameraFront = glm::vec3(0.0f, 0.0f, 0.0f);
 	cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 
 	view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 
 	// projection = glm::ortho(-WORLD_W / 2, WORLD_W / 2, -WORLD_H / 2, WORLD_H / 2, 0.1f, WORLD_D);
-	projection = glm::perspective(glm::radians(45.0f), SCR_W / SCR_H, 0.1f, WORLD_D);
+	projection = glm::perspective(glm::radians(45.0f), SCR_W / SCR_H, 0.1f, 2 * WORLD_D);
 
-	myModel = new Model("../model/spiral-slide/spiral-slide.obj");
+	srand(97458);
+	colors.resize(30);
+	for (size_t i = 0; i < colors.size(); i++)
+	{
+		colors[i].x = (rand() % 11) / 10.0f;
+		colors[i].y = (rand() % 11) / 10.0f;
+		colors[i].z = (rand() % 11) / 10.0f;
+	}
+
+	slideModel = new Model("../model/spiral-slide/spiral-slide.obj");
+
+	pathSegments = new Path();
+
+	vector<float> angles;
+	angles.push_back(180.0f);
+	angles.push_back(-90.0f);
+	angles.push_back(-90.0f);
+	angles.push_back(90.0f);
+	angles.push_back(90.0f);
+	angles.push_back(-90.0f);
+
+	for (size_t i = 0; i < 6; i++)
+	{
+		Bench* b = new Bench(angles[i]);
+		benches.push_back(b);
+	}
 }
 
 // Destructor definition
@@ -39,6 +65,8 @@ Scene::~Scene()
 	// Deallocation of Resources
 	delete myShader;
 	glDeleteVertexArrays(1, &VAO);
+	delete slideModel;
+	delete pathSegments;
 }
 
 // Move into the scene
@@ -101,8 +129,12 @@ void Scene::rollRight()
 }
 
 // Draw object from arguments
-void Scene::drawObject(vector<Vertex> vertices, vector<unsigned int> indices, glm::mat4 model, vector<float> colorVector)
+void Scene::drawObject(Mesh mesh, glm::mat4 model, glm::vec3 colorVector)
 {
+	// model = glm::scale(model, glm::vec3(1.0f / 3000.0f, 1.0f / 3000.0f, 1.0f / 3000.0f));
+
+	vector<Vertex> vertices = mesh.vertices;
+	vector<unsigned int> indices = mesh.indices;
 	unsigned int VBO, EBO;
 	glGenBuffers(1, &VBO);
 	glGenBuffers(1, &EBO);
@@ -129,7 +161,7 @@ void Scene::drawObject(vector<Vertex> vertices, vector<unsigned int> indices, gl
 	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 	glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 	glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
-	glUniform3f(myColorLoc, colorVector[0], colorVector[1], colorVector[2]);
+	glUniform3f(myColorLoc, colorVector.x, colorVector.y, colorVector.z);
 
 	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 
@@ -137,20 +169,62 @@ void Scene::drawObject(vector<Vertex> vertices, vector<unsigned int> indices, gl
 	glDeleteBuffers(1, &EBO);
 }
 
-// Call rendering functions for all the pre-computed objects
+void Scene::drawPaths()
+{
+	glm::vec3 roadColor = glm::vec3(0.0f, 0.0f, 0.0f);
+
+	for (size_t i = 0; i < pathSegments->meshes.size(); i++)
+	{
+		drawObject(pathSegments->meshes[i], pathSegments->models[i], roadColor);
+	}
+}
+
+void Scene::drawBenches()
+{
+	glm::vec3 woodColor = glm::vec3(0.4f, 0.2f, 0.0f);
+	glm::vec3 metalColor = glm::vec3(0.270f, 0.290f, 0.318f);
+	vector<glm::vec3> worldPos;
+	worldPos.push_back(glm::vec3(200.0f, 60.0f, 250.0f));
+	worldPos.push_back(glm::vec3(1250.0f, 60.0f, 700.0f));
+	worldPos.push_back(glm::vec3(1250.0f, 60.0f, -700.0f));
+	worldPos.push_back(glm::vec3(-1250.0f, 60.0f, 700.0f));
+	worldPos.push_back(glm::vec3(-1250.0f, 60.0f, -700.0f));
+	worldPos.push_back(glm::vec3(1050.0f, 60.0f, 200.0f));
+
+	for (size_t i = 0; i < benches.size(); i++)
+	{
+		for (size_t j = 0; j < benches[i]->meshesw.size(); j++)
+		{
+			glm::mat4 model = glm::mat4(1.0f);
+			model = glm::translate(model, worldPos[i]) * benches[i]->modelsw[j];
+			// model = glm::rotate(model, angles[i], glm::vec3(0.0f, 1.0, 0.0f));
+			drawObject(benches[i]->meshesw[j], model, woodColor);
+		}
+		for (size_t j = 0; j < benches[i]->meshesm.size(); j++)
+		{
+			glm::mat4 model = glm::mat4(1.0f);
+			model = glm::translate(model, worldPos[i]) * benches[i]->modelsm[j];
+			// model = glm::rotate(model, angles[i], glm::vec3(0.0f, 1.0, 0.0f));
+			drawObject(benches[i]->meshesm[j], model, metalColor);
+		}
+	}
+}
+
+// Call rendering function for all the pre-computed objects
 void Scene::drawObjects()
 {
-	vector<vector<float>> colors(1);
-	colors[0].resize(3);
-	for (unsigned int i = 0; i < myModel->meshes.size(); i++)
+	Mesh cuboidalMesh = shape::getCuboidalMesh(WORLD_W, 10.0f, WORLD_D);
+	glm::mat4 model = glm::mat4(1.0f);
+	model = glm::translate(model, glm::vec3(0.0f, -5.0f, 0.0f));
+	model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	drawObject(cuboidalMesh, model, colors[25]);
+	drawPaths(); 
+	drawBenches();
+	for (unsigned int i = 0; i < slideModel->meshes.size(); i++)
 	{
-		colors[0][i % 3] = 1.0f;
-		colors[0][(i + 1) % 3] = 0.0f;
-		colors[0][(i + 2) % 3] = 0.0f;
 		glm::mat4 model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(0.0f, 0.0f, -30.0f));
-		model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(5.0f, 5.0f, 5.0f));
-		drawObject(myModel->meshes[i].vertices, myModel->meshes[i].indices, model, colors[0]);
+		model = glm::translate(model, glm::vec3(-100.0f, 0.0f, -250.0f));
+		model = glm::scale(model, glm::vec3(45.0f, 45.0f, 45.0f));
+		drawObject(slideModel->meshes[i], model, colors[i]);
 	}
 }
