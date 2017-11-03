@@ -31,7 +31,7 @@ Scene::Scene()
 	// projection = glm::ortho(-WORLD_W / 2, WORLD_W / 2, -WORLD_H / 2, WORLD_H / 2, 0.1f, WORLD_D);
 	projection = glm::perspective(glm::radians(45.0f), SCR_W / SCR_H, 0.1f, 2 * WORLD_D);
 
-	srand(9458);
+	srand(94558);
 	colors.resize(30);
 	for (size_t i = 0; i < colors.size(); i++)
 	{
@@ -195,14 +195,12 @@ void Scene::drawBenches()
 		{
 			glm::mat4 model = glm::mat4(1.0f);
 			model = glm::translate(model, worldPos[i]) * benches[i]->modelsw[j];
-			// model = glm::rotate(model, angles[i], glm::vec3(0.0f, 1.0, 0.0f));
 			drawObject(benches[i]->meshesw[j], model, woodColor);
 		}
 		for (size_t j = 0; j < benches[i]->meshesm.size(); j++)
 		{
 			glm::mat4 model = glm::mat4(1.0f);
 			model = glm::translate(model, worldPos[i]) * benches[i]->modelsm[j];
-			// model = glm::rotate(model, angles[i], glm::vec3(0.0f, 1.0, 0.0f));
 			drawObject(benches[i]->meshesm[j], model, metalColor);
 		}
 	}
