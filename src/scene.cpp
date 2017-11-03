@@ -22,8 +22,8 @@ Scene::Scene()
 	yaw = -90.0f;
 	roll = 0.0f;
 	
-	cameraPos = glm::vec3(0.0f, 160.0f, 1000.0f);
-	cameraFront = glm::vec3(0.0f, 0.0f, 0.0f);
+	cameraPos = glm::vec3(0.0f, 160.0f, 1100.0f);
+	cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 	cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 
 	view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
@@ -31,7 +31,7 @@ Scene::Scene()
 	// projection = glm::ortho(-WORLD_W / 2, WORLD_W / 2, -WORLD_H / 2, WORLD_H / 2, 0.1f, WORLD_D);
 	projection = glm::perspective(glm::radians(45.0f), SCR_W / SCR_H, 0.1f, 2 * WORLD_D);
 
-	srand(97458);
+	srand(9458);
 	colors.resize(30);
 	for (size_t i = 0; i < colors.size(); i++)
 	{
@@ -50,9 +50,8 @@ Scene::Scene()
 	angles.push_back(-90.0f);
 	angles.push_back(90.0f);
 	angles.push_back(90.0f);
-	angles.push_back(-90.0f);
 
-	for (size_t i = 0; i < 6; i++)
+	for (size_t i = 0; i < 5; i++)
 	{
 		Bench* b = new Bench(angles[i]);
 		benches.push_back(b);
@@ -189,7 +188,6 @@ void Scene::drawBenches()
 	worldPos.push_back(glm::vec3(1250.0f, 60.0f, -700.0f));
 	worldPos.push_back(glm::vec3(-1250.0f, 60.0f, 700.0f));
 	worldPos.push_back(glm::vec3(-1250.0f, 60.0f, -700.0f));
-	worldPos.push_back(glm::vec3(1050.0f, 60.0f, 200.0f));
 
 	for (size_t i = 0; i < benches.size(); i++)
 	{
