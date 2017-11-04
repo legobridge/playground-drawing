@@ -39,6 +39,11 @@ Scene::Scene()
 		colors[i].y = (rand() % 11) / 10.0f;
 		colors[i].z = (rand() % 11) / 10.0f;
 	}
+	colors[0] = glm::vec3(0.000f, 0.000f, 0.800f);
+	colors[5] = glm::vec3(0.000f, 0.650f, 0.002f);
+	colors[6] = glm::vec3(0.115f, 0.115f, 0.115f);
+	colors[7] = glm::vec3(0.900f, 0.700f, 0.000f);
+	colors[8] = glm::vec3(0.900f, 0.000f, 0.000f);
 
 	slideModel = new Model("../model/spiral-slide/spiral-slide.obj");
 
