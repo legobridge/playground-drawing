@@ -19,103 +19,116 @@ namespace shape
 		Vertex vertex;
 		glm::vec3 v;
 
+		for (int i = 0; i < 8; i++)
+		{
+			if (i & 4)
+			{
+				v.x = vX;
+			}
+			else
+			{
+				v.x = -vX;
+			}
+			if (i & 2)
+			{
+				v.y = vY;
+			}
+			else
+			{
+				v.y = -vY;
+			}
+			if (i & 1)
+			{
+				v.z = vZ;
+			}
+			else
+			{
+				v.z = -vZ;
+			}
+			vertex.Position = v;
+			vertices.push_back(vertex);
+		}
+
 		v.x = -vX;
+		v.y = 0.0f;
+		v.z = 0.0f;
+		vertex.Position = v;
+		vertices.push_back(vertex);
+
+		v.x = 0.0f;
 		v.y = -vY;
-		v.z = -vZ;
+		v.z = 0.0f;
 		vertex.Position = v;
 		vertices.push_back(vertex);
 
 		v.x = vX;
-		v.y = -vY;
+		v.y = 0.0f;
+		v.z = 0.0f;
+		vertex.Position = v;
+		vertices.push_back(vertex);
+
+		v.x = 0.0f;
+		v.y = vY;
+		v.z = 0.0f;
+		vertex.Position = v;
+		vertices.push_back(vertex);
+
+		v.x = 0.0f;
+		v.y = 0.0f;
 		v.z = -vZ;
 		vertex.Position = v;
 		vertices.push_back(vertex);
 
-		v.x = vX;
-		v.y = vY;
-		v.z = -vZ;
-		vertex.Position = v;
-		vertices.push_back(vertex);
-
-		v.x = -vX;
-		v.y = vY;
-		v.z = -vZ;
-		vertex.Position = v;
-		vertices.push_back(vertex);
-
-		v.x = -vX;
-		v.y = vY;
+		v.x = 0.0f;
+		v.y = 0.0f;
 		v.z = vZ;
 		vertex.Position = v;
 		vertices.push_back(vertex);
 
-		v.x = -vX;
-		v.y = -vY;
-		v.z = vZ;
-		vertex.Position = v;
-		vertices.push_back(vertex);
+		vector<unsigned int> indices = {
+			8, 0, 1,
+			8, 1, 3,
+			8, 3, 2,
+			8, 2, 0,
 
-		v.x = vX;
-		v.y = -vY;
-		v.z = vZ;
-		vertex.Position = v;
-		vertices.push_back(vertex);
+			9, 4, 5,
+			9, 5, 1,
+			9, 1, 0,
+			9, 0, 4,
 
-		v.x = vX;
-		v.y = vY;
-		v.z = vZ;
-		vertex.Position = v;
-		vertices.push_back(vertex);
+			10, 6, 7,
+			10, 7, 5,
+			10, 5, 4,
+			10, 4, 6,
 
-		vector<unsigned int> indices;
+			11, 2, 3,
+			11, 3, 7,
+			11, 7, 6,
+			11, 6, 2,
 
-		indices.push_back(0);
-		indices.push_back(1);
-		indices.push_back(2);
+			12, 2, 6,
+			12, 6, 4,
+			12, 4, 0,
+			12, 0, 2,
 
-		indices.push_back(2);
-		indices.push_back(0);
-		indices.push_back(3);
+			13, 1, 5,
+			13, 5, 7,
+			13, 7, 3,
+			13, 3, 1
+		};
 
-		indices.push_back(3);
-		indices.push_back(4);
-		indices.push_back(7);
+		for (size_t i = 0; i < indices.size(); i += 3)
+		{
+			glm::vec3 faceNormal = glm::normalize(glm::cross(vertices[indices[i + 1]].Position - vertices[indices[i]].Position, vertices[indices[i + 2]].Position - vertices[indices[i]].Position));
+			vertices[indices[i]].Normal += faceNormal;
+			vertices[indices[i + 1]].Normal += faceNormal;
+			vertices[indices[i + 2]].Normal += faceNormal;
+		}
 
-		indices.push_back(7);
-		indices.push_back(3);
-		indices.push_back(2);
-
-		indices.push_back(2);
-		indices.push_back(1);
-		indices.push_back(6);
-
-		indices.push_back(6);
-		indices.push_back(2);
-		indices.push_back(7);
-
-		indices.push_back(7);
-		indices.push_back(6);
-		indices.push_back(5);
-
-		indices.push_back(5);
-		indices.push_back(7);
-		indices.push_back(4);
-
-		indices.push_back(4);
-		indices.push_back(3);
-		indices.push_back(0);
-
-		indices.push_back(0);
-		indices.push_back(4);
-		indices.push_back(5);
-
-		indices.push_back(5);
-		indices.push_back(0);
-		indices.push_back(1);
-
-		indices.push_back(1);
-		indices.push_back(6);
-		indices.push_back(5);
+		for (size_t i = 0; i < vertices.size(); i++)
+		{
+			vertices[i].Normal = glm::normalize(vertices[i].Normal);
+		}
 
 		Mesh mesh(vertices, indices);
 		return mesh;
@@ -174,8 +187,21 @@ namespace shape
 			indices.push_back(second2);
 
 			indices.push_back(first1);
-			indices.push_back(second1);
 			indices.push_back(second2);
+			indices.push_back(second1);
+		}
+
+		for (size_t i = 0; i < indices.size(); i += 3)
+		{
+			glm::vec3 faceNormal = glm::normalize(glm::cross(vertices[indices[i + 1]].Position - vertices[indices[i]].Position, vertices[indices[i + 2]].Position - vertices[indices[i]].Position));
+			vertices[indices[i]].Normal += faceNormal;
+			vertices[indices[i + 1]].Normal += faceNormal;
+			vertices[indices[i + 2]].Normal += faceNormal;
+		}
+
+		for (size_t i = 0; i < vertices.size(); i++)
+		{
+			vertices[i].Normal = glm::normalize(vertices[i].Normal);
 		}
 
 		Mesh mesh(vertices, indices);

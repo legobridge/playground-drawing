@@ -137,10 +137,9 @@ void Scene::rollRight()
 // Draw object from arguments
 void Scene::drawObject(Mesh mesh, glm::mat4 model, glm::vec3 colorVector)
 {
-	// model = glm::scale(model, glm::vec3(1.0f / 3000.0f, 1.0f / 3000.0f, 1.0f / 3000.0f));
-
 	vector<Vertex> vertices = mesh.vertices;
 	vector<unsigned int> indices = mesh.indices;
+
 	unsigned int VBO, EBO;
 	glGenBuffers(1, &VBO);
 	glGenBuffers(1, &EBO);
@@ -220,6 +219,8 @@ void Scene::drawSeeSaws()
 	glm::mat4 rot = glm::mat4(1.0f);
 	rot = glm::rotate(rot, glm::radians(23.58f), glm::vec3(1.0f, 0.0f, 0.0f));
 	float scaleBy = 1.3f;
+
+	// First see-saw
 	for (size_t j = 0; j < ss->meshesw.size(); j++)
 	{
 		glm::mat4 model = glm::mat4(1.0f);
@@ -242,7 +243,7 @@ void Scene::drawSeeSaws()
 		drawObject(ss->meshes_base[j], model, metalColor);
 	}
 
-
+	// Second see-saw
 	for (size_t j = 0; j < ss->meshesw.size(); j++)
 	{
 		glm::mat4 model = glm::mat4(1.0f);
@@ -272,7 +273,6 @@ void Scene::drawObjects()
 	Mesh cuboidalMesh = shape::getCuboidalMesh(WORLD_W, 10.0f, WORLD_D);
 	glm::mat4 model = glm::mat4(1.0f);
 	model = glm::translate(model, glm::vec3(0.0f, -5.0f, 0.0f));
-	model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	drawObject(cuboidalMesh, model, colors[25]);
 	drawPaths();
 	drawBenches();

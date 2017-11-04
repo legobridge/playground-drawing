@@ -58,7 +58,7 @@ public:
 	// Vector of bench objects
 	std::vector<Bench*> benches;
 
-	// See-Saw object
+	// See-saw object
 	SeeSaw* ss;
 
 	// Vector of colors
