@@ -15,5 +15,9 @@ public:
 	std::vector<Mesh> meshesm;
 	std::vector<glm::mat4> modelsm;
 
-	SeeSaw(float angle);
+	// Base
+	std::vector<Mesh> meshes_base;
+	std::vector<glm::mat4> models_base;
+
+	SeeSaw();
 };

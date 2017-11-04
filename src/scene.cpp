@@ -61,6 +61,8 @@ Scene::Scene()
 		Bench* b = new Bench(angles[i]);
 		benches.push_back(b);
 	}
+
+	ss = new SeeSaw();
 }
 
 // Destructor definition
@@ -211,6 +213,59 @@ void Scene::drawBenches()
 	}
 }
 
+void Scene::drawSeeSaws()
+{
+	glm::vec3 woodColor = glm::vec3(0.6f, 0.3f, 0.0f);
+	glm::vec3 metalColor = glm::vec3(0.270f, 0.290f, 0.318f);
+	glm::mat4 rot = glm::mat4(1.0f);
+	rot = glm::rotate(rot, glm::radians(23.58f), glm::vec3(1.0f, 0.0f, 0.0f));
+	float scaleBy = 1.3f;
+	for (size_t j = 0; j < ss->meshesw.size(); j++)
+	{
+		glm::mat4 model = glm::mat4(1.0f);
+		model = glm::scale(model, glm::vec3(scaleBy, scaleBy, scaleBy));
+		model = glm::translate(model, glm::vec3(-150.0f, 40.0f, 250.0f)) * rot * ss->modelsw[j];
+		drawObject(ss->meshesw[j], model, woodColor);
+	}
+	for (size_t j = 0; j < ss->meshesm.size(); j++)
+	{
+		glm::mat4 model = glm::mat4(1.0f);
+		model = glm::scale(model, glm::vec3(scaleBy, scaleBy, scaleBy));
+		model = glm::translate(model, glm::vec3(-150.0f, 40.0f, 250.0f)) * rot * ss->modelsm[j];
+		drawObject(ss->meshesm[j], model, metalColor);
+	}
+	for (size_t j = 0; j < ss->meshes_base.size(); j++)
+	{
+		glm::mat4 model = glm::mat4(1.0f);
+		model = glm::scale(model, glm::vec3(scaleBy, scaleBy, scaleBy));
+		model = glm::translate(model, glm::vec3(-150.0f, 0.0f, 250.0f)) * ss->models_base[j];
+		drawObject(ss->meshes_base[j], model, metalColor);
+	}
+
+
+	for (size_t j = 0; j < ss->meshesw.size(); j++)
+	{
+		glm::mat4 model = glm::mat4(1.0f);
+		model = glm::scale(model, glm::vec3(scaleBy, scaleBy, scaleBy));
+		model = glm::translate(model, glm::vec3(-50.0f, 40.0f, 250.0f)) * rot * ss->modelsw[j];
+		drawObject(ss->meshesw[j], model, woodColor);
+	}
+	for (size_t j = 0; j < ss->meshesm.size(); j++)
+	{
+		glm::mat4 model = glm::mat4(1.0f);
+		model = glm::scale(model, glm::vec3(scaleBy, scaleBy, scaleBy));
+		model = glm::translate(model, glm::vec3(-50.0f, 40.0f, 250.0f)) * rot * ss->modelsm[j];
+		drawObject(ss->meshesm[j], model, metalColor);
+	}
+	for (size_t j = 0; j < ss->meshes_base.size(); j++)
+	{
+		glm::mat4 model = glm::mat4(1.0f);
+		model = glm::scale(model, glm::vec3(scaleBy, scaleBy, scaleBy));
+		model = glm::translate(model, glm::vec3(-50.0f, 0.0f, 250.0f)) * ss->models_base[j];
+		drawObject(ss->meshes_base[j], model, metalColor);
+	}
+}
+
 // Call rendering function for all the pre-computed objects
 void Scene::drawObjects()
 {
@@ -219,8 +274,9 @@ void Scene::drawObjects()
 	model = glm::translate(model, glm::vec3(0.0f, -5.0f, 0.0f));
 	model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	drawObject(cuboidalMesh, model, colors[25]);
-	drawPaths(); 
+	drawPaths();
 	drawBenches();
+	drawSeeSaws();
 	for (unsigned int i = 0; i < slideModel->meshes.size(); i++)
 	{
 		glm::mat4 model = glm::mat4(1.0f);

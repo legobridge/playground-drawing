@@ -9,6 +9,7 @@
 #include "model.h"
 #include "path.h"
 #include "bench.h"
+#include "seesaw.h"
 
 class Scene
 {
@@ -57,6 +58,9 @@ public:
 	// Vector of bench objects
 	std::vector<Bench*> benches;
 
+	// See-Saw object
+	SeeSaw* ss;
+
 	// Vector of colors
 	std::vector<glm::vec3> colors;
 
@@ -95,6 +99,9 @@ public:
 
 	// Draw the benches
 	void drawBenches();
+
+	// Draw the See-Saws
+	void drawSeeSaws();
 
 	// Call rendering functions for all the pre-computed objects
 	void drawObjects();
