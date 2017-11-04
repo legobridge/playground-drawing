@@ -1,5 +1,6 @@
 #include <iostream>
 #include "glad/glad.h"
+#include "GLFW/glfw3.h"
 #include "scene.h"
 #include "shape.h"
 
@@ -139,6 +140,7 @@ void Scene::drawObject(Mesh mesh, glm::mat4 model, glm::vec3 colorVector)
 {
 	vector<Vertex> vertices = mesh.vertices;
 	vector<unsigned int> indices = mesh.indices;
+	glm::vec3 lightPos(0.0f, WORLD_H * 5.0f, 0.0f);
 
 	unsigned int VBO, EBO;
 	glGenBuffers(1, &VBO);
@@ -156,17 +158,25 @@ void Scene::drawObject(Mesh mesh, glm::mat4 model, glm::vec3 colorVector)
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Normal));
 
+	view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+
 	unsigned int modelLoc = glGetUniformLocation(myShader->ID, "model");
 	unsigned int viewLoc = glGetUniformLocation(myShader->ID, "view");
 	unsigned int projectionLoc = glGetUniformLocation(myShader->ID, "projection");
-	unsigned int myColorLoc = glGetUniformLocation(myShader->ID, "myColor");
-
-	view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 
 	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 	glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 	glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
-	glUniform3f(myColorLoc, colorVector.x, colorVector.y, colorVector.z);
+
+	unsigned int lightPosLoc = glGetUniformLocation(myShader->ID, "lightPos");
+	unsigned int viewPosLoc = glGetUniformLocation(myShader->ID, "viewPos");
+	unsigned int lightColorLoc = glGetUniformLocation(myShader->ID, "lightColor");
+	unsigned int objectColorLoc = glGetUniformLocation(myShader->ID, "objectColor");
+
+	glUniform3f(lightPosLoc, lightPos.x, lightPos.y, lightPos.z);
+	glUniform3f(viewPosLoc, cameraPos.x, cameraPos.y, cameraPos.z);
+	glUniform3f(lightColorLoc, 1.0f, 1.0f, 1.0f);
+	glUniform3f(objectColorLoc, colorVector.x, colorVector.y, colorVector.z);
 
 	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 
