@@ -3,8 +3,12 @@
 
 using namespace std;
 
+// Default constructor
+Mesh::Mesh()
+{
+	// Blank constructor
+}
 
-/*  Functions  */
 // Constructor
 Mesh::Mesh(vector<Vertex> vertices, vector<unsigned int> indices)
 {

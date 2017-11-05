@@ -21,6 +21,9 @@ public:
 	std::vector<Vertex> vertices;
 	std::vector<unsigned int> indices;
 
+	// Default constructor
+	Mesh();
+
 	// Constructor
 	Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices);
 };

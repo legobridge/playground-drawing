@@ -10,6 +10,7 @@
 #include "path.h"
 #include "bench.h"
 #include "seesaw.h"
+#include "roundabout.h"
 
 class Scene
 {
@@ -31,7 +32,7 @@ public:
 	unsigned int VAO;
 
 	// Base camera movement speed
-	const float CAMERA_SPEED = 10.0f;
+	float cameraSpeed;
 
 	// Euler angles
 	float pitch;
@@ -49,7 +50,13 @@ public:
 	// Projection matrix
 	glm::mat4 projection;
 
-	// Model of slide (made in Blender)
+	// Jungle gym model (made in Blender)
+	Model* jungleGymModel;
+
+	// Dome jungle gym model (made in Blender)
+	Model* domeModel;
+
+	// Slide model (made in Blender)
 	Model* slideModel;
 
 	// Path object
@@ -61,6 +68,9 @@ public:
 	// See-saw object
 	SeeSaw* ss;
 
+	// Roundabout object
+	Roundabout* roundabout;
+
 	// Vector of colors
 	std::vector<glm::vec3> colors;
 
@@ -69,6 +79,9 @@ public:
 
 	// Destructor
 	~Scene();
+
+	// Change camera movement speed
+	void changeSpeed(float by);
 
 	// Move into the scene
 	void moveIn();
@@ -102,6 +115,9 @@ public:
 
 	// Draw the See-Saws
 	void drawSeeSaws();
+
+	// Draw the roundabout
+	void drawRoundabout();
 
 	// Call rendering functions for all the pre-computed objects
 	void drawObjects();

@@ -19,6 +19,8 @@ Scene::Scene()
 	glGenVertexArrays(1, &VAO);
 	glBindVertexArray(VAO);
 
+	cameraSpeed = 10.0f;
+
 	pitch = 0.0f;
 	yaw = -90.0f;
 	roll = 0.0f;
@@ -40,13 +42,17 @@ Scene::Scene()
 		colors[i].y = (rand() % 11) / 10.0f;
 		colors[i].z = (rand() % 11) / 10.0f;
 	}
-	colors[0] = glm::vec3(0.000f, 0.000f, 0.800f);
-	colors[5] = glm::vec3(0.000f, 0.650f, 0.002f);
-	colors[6] = glm::vec3(0.115f, 0.115f, 0.115f);
-	colors[7] = glm::vec3(0.900f, 0.700f, 0.000f);
-	colors[8] = glm::vec3(0.900f, 0.000f, 0.000f);
+	colors[0] = glm::vec3(0.000f, 0.000f, 0.950f);
+	colors[5] = glm::vec3(0.000f, 0.70f, 0.002f);
+	colors[6] = glm::vec3(0.215f, 0.215f, 0.215f);
+	colors[7] = glm::vec3(1.00f, 0.800f, 0.000f);
+	colors[8] = glm::vec3(0.950f, 0.000f, 0.000f);
 
-	slideModel = new Model("../model/spiral-slide/spiral-slide.obj");
+	/*jungleGymModel = new Model("../model/jungle-gym/jungle-gym.obj");
+
+	domeModel = new Model("../model/dome-jungle-gym/dome-jungle-gym.obj");
+
+	slideModel = new Model("../model/spiral-slide/spiral-slide.obj");*/
 
 	pathSegments = new Path();
 
@@ -64,6 +70,8 @@ Scene::Scene()
 	}
 
 	ss = new SeeSaw();
+
+	roundabout = new Roundabout();
 }
 
 // Destructor definition
@@ -74,30 +82,41 @@ Scene::~Scene()
 	glDeleteVertexArrays(1, &VAO);
 	delete slideModel;
 	delete pathSegments;
+	for (size_t i = 0; i < benches.size(); i++)
+	{
+		delete benches[i];
+	}
+	delete ss;
+}
+
+// Change camera movement speed
+void Scene::changeSpeed(float by)
+{
+	cameraSpeed = max(cameraSpeed + by, 0.0f);
 }
 
 // Move into the scene
 void Scene::moveIn()
 {
-	cameraPos += CAMERA_SPEED * cameraFront;
+	cameraPos += cameraSpeed * cameraFront;
 }
 
 // Move out of the scene
 void Scene::moveOut()
 {
-	cameraPos -= CAMERA_SPEED * cameraFront;
+	cameraPos -= cameraSpeed * cameraFront;
 }
 
 // Strafe to the left
 void Scene::strafeLeft()
 {
-	cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * CAMERA_SPEED;
+	cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
 }
 
 // Strafe to the right
 void Scene::strafeRight()
 {
-	cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * CAMERA_SPEED;
+	cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
 }
 
 // Pan the camera
@@ -277,6 +296,32 @@ void Scene::drawSeeSaws()
 	}
 }
 
+
+void Scene::drawRoundabout()
+{
+	glm::vec3 baseColor = glm::vec3(1.0f, 0.3f, 0.1f);
+	glm::vec3 poleColor = glm::vec3(0.970f, 0.090f, 0.018f);
+	glm::vec3 handleColor = glm::vec3(0.800f, 0.890f, 0.018f);
+	
+	// Draw the base
+	glm::mat4 model = glm::mat4(1.0f);
+	model = glm::translate(model, glm::vec3(800.0f, 0.0f, -625.0f)) * roundabout->modelb;
+	drawObject(roundabout->meshb, model, baseColor);
+
+	// Draw the central pole
+	model = glm::mat4(1.0f);
+	model = glm::translate(model, glm::vec3(800.0f, 0.0f, -625.0f)) * roundabout->modelp;
+	drawObject(roundabout->meshp, model, poleColor);
+
+	// Draw the handlebars
+	for (size_t i = 0; i < roundabout->meshesh.size(); i++)
+	{
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(800.0f, 0.0f, -625.0f)) * roundabout->modelsh[i];
+		drawObject(roundabout->meshesh[i], model, handleColor);
+	}
+}
+
 // Call rendering function for all the pre-computed objects
 void Scene::drawObjects()
 {
@@ -287,6 +332,14 @@ void Scene::drawObjects()
 	drawPaths();
 	drawBenches();
 	drawSeeSaws();
+	drawRoundabout();
+	/*for (unsigned int i = 0; i < jungleGymModel->meshes.size(); i++)
+	{
+		glm::mat4 model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(-100.0f, 0.0f, -250.0f));
+		model = glm::scale(model, glm::vec3(45.0f, 45.0f, 45.0f));
+		drawObject(jungleGymModel->meshes[i], model, colors[i]);
+	}
 	for (unsigned int i = 0; i < slideModel->meshes.size(); i++)
 	{
 		glm::mat4 model = glm::mat4(1.0f);
@@ -294,4 +347,11 @@ void Scene::drawObjects()
 		model = glm::scale(model, glm::vec3(45.0f, 45.0f, 45.0f));
 		drawObject(slideModel->meshes[i], model, colors[i]);
 	}
+	for (unsigned int i = 0; i < domeModel->meshes.size(); i++)
+	{
+		glm::mat4 model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(-100.0f, 0.0f, -250.0f));
+		model = glm::scale(model, glm::vec3(45.0f, 45.0f, 45.0f));
+		drawObject(domeModel->meshes[i], model, colors[i]);
+	}*/
 }

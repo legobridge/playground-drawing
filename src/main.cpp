@@ -101,6 +101,16 @@ void cursor_pos_callback(GLFWwindow* window, double xpos, double ypos)
 	myScene->pan(xoffset, yoffset);
 }
 
+// **************************************
+// ********** Mouse Processing **********
+// - Scroll Up
+// - Scroll Down
+// **************************************
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
+{
+	myScene->changeSpeed(yoffset);
+}
+
 // OpenGL Initialization
 bool initializeOpenGL()
 {
@@ -135,6 +145,9 @@ bool initializeOpenGL()
 
 	// Register callback function for mouse movement
 	glfwSetCursorPosCallback(window, cursor_pos_callback);
+
+	// Register callback function for scroll wheel movement
+	glfwSetScrollCallback(window, scroll_callback);
 
 	// Fix Aspect Ratio to 16:9
 	glfwSetWindowAspectRatio(window, 16, 9);
