@@ -11,6 +11,7 @@
 #include "bench.h"
 #include "seesaw.h"
 #include "roundabout.h"
+#include "swing.h"
 
 class Scene
 {
@@ -71,6 +72,9 @@ public:
 	// Roundabout object
 	Roundabout* roundabout;
 
+	// Swing object
+	Swing* swing;
+
 	// Vector of colors
 	std::vector<glm::vec3> colors;
 
@@ -104,6 +108,9 @@ public:
 	// Roll to the right
 	void rollRight();
 
+	// Draw the ground
+	void drawTerrain();
+
 	// Draw an object using arguments
 	void drawObject(Mesh mesh, glm::mat4 model, glm::vec3 colorVector);
 
@@ -118,6 +125,9 @@ public:
 
 	// Draw the roundabout
 	void drawRoundabout();
+
+	// Draw the swing
+	void drawSwing();
 
 	// Call rendering functions for all the pre-computed objects
 	void drawObjects();

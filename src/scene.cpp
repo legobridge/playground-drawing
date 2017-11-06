@@ -32,7 +32,7 @@ Scene::Scene()
 	view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 
 	// projection = glm::ortho(-WORLD_W / 2, WORLD_W / 2, -WORLD_H / 2, WORLD_H / 2, 0.1f, WORLD_D);
-	projection = glm::perspective(glm::radians(45.0f), SCR_W / SCR_H, 0.1f, 2 * WORLD_D);
+	projection = glm::perspective(glm::radians(45.0f), SCR_W / SCR_H, 0.1f, 4 * WORLD_D);
 
 	srand(94558);
 	colors.resize(30);
@@ -72,6 +72,8 @@ Scene::Scene()
 	ss = new SeeSaw();
 
 	roundabout = new Roundabout();
+
+	swing = new Swing();
 }
 
 // Destructor definition
@@ -203,6 +205,19 @@ void Scene::drawObject(Mesh mesh, glm::mat4 model, glm::vec3 colorVector)
 	glDeleteBuffers(1, &EBO);
 }
 
+void Scene::drawTerrain()
+{
+	Mesh cuboidalMesh = shape::getCuboidalMesh(10 * WORLD_W, 6.0f, 10 * WORLD_D);
+	glm::mat4 model = glm::mat4(1.0f);
+	model = glm::translate(model, glm::vec3(0.0f, -10.0f, 0.0f));
+	drawObject(cuboidalMesh, model, glm::vec3(0.308f, 0.100f, 0.053f));
+
+	cuboidalMesh = shape::getCuboidalMesh(WORLD_W, 10.0f, WORLD_D);
+	model = glm::mat4(1.0f);
+	model = glm::translate(model, glm::vec3(0.0f, -5.0f, 0.0f));
+	drawObject(cuboidalMesh, model, glm::vec3(0.1f, 1.0f, 0.1f));
+}
+
 void Scene::drawPaths()
 {
 	glm::vec3 roadColor = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -218,11 +233,11 @@ void Scene::drawBenches()
 	glm::vec3 woodColor = glm::vec3(0.4f, 0.2f, 0.0f);
 	glm::vec3 metalColor = glm::vec3(0.270f, 0.290f, 0.318f);
 	vector<glm::vec3> worldPos;
-	worldPos.push_back(glm::vec3(200.0f, 60.0f, 250.0f));
-	worldPos.push_back(glm::vec3(1250.0f, 60.0f, 700.0f));
-	worldPos.push_back(glm::vec3(1250.0f, 60.0f, -700.0f));
-	worldPos.push_back(glm::vec3(-1250.0f, 60.0f, 700.0f));
-	worldPos.push_back(glm::vec3(-1250.0f, 60.0f, -700.0f));
+	worldPos.push_back(glm::vec3(200.0f, 0.0f, 250.0f));
+	worldPos.push_back(glm::vec3(1250.0f, 0.0f, 700.0f));
+	worldPos.push_back(glm::vec3(1250.0f, 0.0f, -700.0f));
+	worldPos.push_back(glm::vec3(-1250.0f, 0.0f, 700.0f));
+	worldPos.push_back(glm::vec3(-1250.0f, 0.0f, -700.0f));
 
 	for (size_t i = 0; i < benches.size(); i++)
 	{
@@ -299,7 +314,7 @@ void Scene::drawSeeSaws()
 
 void Scene::drawRoundabout()
 {
-	glm::vec3 baseColor = glm::vec3(1.0f, 0.3f, 0.1f);
+	glm::vec3 baseColor = glm::vec3(0.8f, 0.3f, 0.1f);
 	glm::vec3 poleColor = glm::vec3(0.970f, 0.090f, 0.018f);
 	glm::vec3 handleColor = glm::vec3(0.800f, 0.890f, 0.018f);
 	
@@ -322,17 +337,43 @@ void Scene::drawRoundabout()
 	}
 }
 
+
+void Scene::drawSwing()
+{
+	glm::vec3 woodColor = glm::vec3(0.6f, 0.3f, 0.0f);
+	glm::vec3 metalColor = glm::vec3(0.270f, 0.290f, 0.318f);
+	glm::vec3 ropeColor = glm::vec3(0.398f, 0.337f, 0.220f);
+
+	// First see-saw
+	for (size_t j = 0; j < swing->meshesw.size(); j++)
+	{
+		glm::mat4 model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(800.0f, 0.0f, 150.0f)) * swing->modelsw[j];
+		drawObject(swing->meshesw[j], model, woodColor);
+	}
+	for (size_t j = 0; j < swing->meshesm.size(); j++)
+	{
+		glm::mat4 model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(800.0f, 0.0f, 150.0f)) * swing->modelsm[j];
+		drawObject(swing->meshesm[j], model, metalColor);
+	}
+	for (size_t j = 0; j < swing->meshes_rope.size(); j++)
+	{
+		glm::mat4 model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(800.0f, 0.0f, 150.0f)) * swing->models_rope[j];
+		drawObject(swing->meshes_rope[j], model, ropeColor);
+	}
+}
+
 // Call rendering function for all the pre-computed objects
 void Scene::drawObjects()
 {
-	Mesh cuboidalMesh = shape::getCuboidalMesh(WORLD_W, 10.0f, WORLD_D);
-	glm::mat4 model = glm::mat4(1.0f);
-	model = glm::translate(model, glm::vec3(0.0f, -5.0f, 0.0f));
-	drawObject(cuboidalMesh, model, colors[25]);
+	drawTerrain();
 	drawPaths();
 	drawBenches();
 	drawSeeSaws();
 	drawRoundabout();
+	drawSwing();
 	/*for (unsigned int i = 0; i < jungleGymModel->meshes.size(); i++)
 	{
 		glm::mat4 model = glm::mat4(1.0f);

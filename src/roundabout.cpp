@@ -6,14 +6,14 @@ using namespace std;
 Roundabout::Roundabout()
 {
 	// Base parameters
-	meshb = shape::getCylindricalMesh(150.0f, 15.0f);
+	meshb = shape::getCylindricalMesh(150.0f, 20.0f);
 	modelb = glm::mat4(1.0f);
 	modelb = glm::translate(modelb, glm::vec3(0.0f, 20.0f, 0.0f));
 
 	// Central pole parameters
-	meshp = shape::getCylindricalMesh(5.0f, 140.0f);
+	meshp = shape::getCylindricalMesh(5.0f, 144.0f);
 	modelp = glm::mat4(1.0f);
-	modelp = glm::translate(modelp, glm::vec3(0.0f, 70.0f, 0.0f));
+	modelp = glm::translate(modelp, glm::vec3(0.0f, 72.0f, 0.0f));
 
 	// Handle bar parameters
 	Mesh verticalHandleBar = shape::getCylindricalMesh(5.0f, 112.5f);
