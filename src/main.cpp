@@ -39,12 +39,13 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 // **************************************
 // ********* Keypress Processing ********
 // - Esc key closes the window
-// - Left key 
-// - Right key
 // - W key 
 // - S key
 // - A key 
 // - D key
+// - P key
+// - [ key
+// - ] key
 // **************************************
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
@@ -68,15 +69,18 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	{
 		myScene->strafeRight();
 	}
-	if (key == GLFW_KEY_LEFT && (action == GLFW_REPEAT || action == GLFW_PRESS))
+	if (key == GLFW_KEY_P && (action == GLFW_REPEAT || action == GLFW_PRESS))
 	{
-		myScene->rollLeft();
+		myScene->toggleTime();
 	}
-	if (key == GLFW_KEY_RIGHT && (action == GLFW_REPEAT || action == GLFW_PRESS))
+	if (key == GLFW_KEY_LEFT_BRACKET && (action == GLFW_REPEAT || action == GLFW_PRESS))
 	{
-		myScene->rollRight();
+		myScene->slowDownTime();
 	}
-	// printf("%f %f %f\n", myScene->cameraPos.x, myScene->cameraPos.y, myScene->cameraPos.z);
+	if (key == GLFW_KEY_RIGHT_BRACKET && (action == GLFW_REPEAT || action == GLFW_PRESS))
+	{
+		myScene->speedUpTime();
+	}
 }
 
 // **************************************
@@ -108,7 +112,7 @@ void cursor_pos_callback(GLFWwindow* window, double xpos, double ypos)
 // **************************************
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
-	myScene->changeSpeed(yoffset);
+	myScene->changeSpeed((float)yoffset);
 }
 
 // OpenGL Initialization
@@ -192,7 +196,15 @@ int main()
 		// ******** Rendering Commands ********
 
 		// Clear buffers
-		glClearColor(0.404f, 0.784f, 1.0f, 1.0f);
+		float add = 0.0f;
+		if (!myScene->paused)
+		{
+			add = myScene->timescale;
+		}
+		myScene->time += add;
+		float c = max(0.1f, (float)cos(glm::radians(myScene->time)));
+		glm::vec3 backgroundColor = glm::vec3(0.404f * c, 0.684f * c, 0.900f * c);
+		glClearColor(backgroundColor.x, backgroundColor.y, backgroundColor.z, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// Draw objects

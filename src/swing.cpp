@@ -8,13 +8,13 @@ Swing::Swing()
 	// Seats
 	Mesh woodenSegment = shape::getCuboidalMesh(70.0f, 5.0f, 30.0f);
 	glm::mat4 model = glm::mat4(1.0f); 
-	model = glm::translate(model, glm::vec3(-75.0f, 32.5f, 0.0f));
+	model = glm::translate(model, glm::vec3(-75.0f, 37.5f, 0.0f));
 	meshesw.push_back(woodenSegment);
 	modelsw.push_back(model);
 
 	woodenSegment = shape::getCuboidalMesh(70.0f, 5.0f, 30.0f);
 	model = glm::mat4(1.0f);
-	model = glm::translate(model, glm::vec3(75.0f, 32.5f, 0.0f));
+	model = glm::translate(model, glm::vec3(75.0f, 37.5f, 0.0f));
 	meshesw.push_back(woodenSegment);
 	modelsw.push_back(model);
 
@@ -73,25 +73,25 @@ Swing::Swing()
 	// Ropes
 	Mesh ropeSegment = shape::getCylindricalMesh(1.0f, 217.5f);
 	model = glm::mat4(1.0f);
-	model = glm::translate(model, glm::vec3(-105.0f, 141.25f, 0.0f));
+	model = glm::translate(model, glm::vec3(-105.0f, 146.25f, 0.0f));
 	meshes_rope.push_back(ropeSegment);
 	models_rope.push_back(model);
 
 	ropeSegment = shape::getCylindricalMesh(1.0f, 217.5f);
 	model = glm::mat4(1.0f);
-	model = glm::translate(model, glm::vec3(105.0f, 141.25f, 0.0f));
+	model = glm::translate(model, glm::vec3(105.0f, 146.25f, 0.0f));
 	meshes_rope.push_back(ropeSegment);
 	models_rope.push_back(model);
 
 	ropeSegment = shape::getCylindricalMesh(1.0f, 217.5f);
 	model = glm::mat4(1.0f);
-	model = glm::translate(model, glm::vec3(-45.0f, 141.25f, 0.0f));
+	model = glm::translate(model, glm::vec3(-45.0f, 146.25f, 0.0f));
 	meshes_rope.push_back(ropeSegment);
 	models_rope.push_back(model);
 
 	ropeSegment = shape::getCylindricalMesh(1.0f, 217.5f);
 	model = glm::mat4(1.0f);
-	model = glm::translate(model, glm::vec3(45.0f, 141.25f, 0.0f));
+	model = glm::translate(model, glm::vec3(45.0f, 146.25f, 0.0f));
 	meshes_rope.push_back(ropeSegment);
 	models_rope.push_back(model);
 }

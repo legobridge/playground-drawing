@@ -19,13 +19,19 @@ Scene::Scene()
 	glGenVertexArrays(1, &VAO);
 	glBindVertexArray(VAO);
 
-	cameraSpeed = 10.0f;
+	time = 0.0f;
+
+	timescale = 0.2f;
+
+	paused = true;
+
+	cameraSpeed = 15.0f;
 
 	pitch = 0.0f;
 	yaw = -90.0f;
 	roll = 0.0f;
 	
-	cameraPos = glm::vec3(0.0f, 160.0f, 1100.0f);
+	cameraPos = glm::vec3(0.0f, 160.0f, 1200.0f);
 	cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 	cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 
@@ -48,11 +54,13 @@ Scene::Scene()
 	colors[7] = glm::vec3(1.00f, 0.800f, 0.000f);
 	colors[8] = glm::vec3(0.950f, 0.000f, 0.000f);
 
-	/*jungleGymModel = new Model("../model/jungle-gym/jungle-gym.obj");
+	fenceModel = new Model("../model/fence/fence.obj");
+
+	jungleGymModel = new Model("../model/jungle-gym/jungle-gym.obj");
 
 	domeModel = new Model("../model/dome-jungle-gym/dome-jungle-gym.obj");
 
-	slideModel = new Model("../model/spiral-slide/spiral-slide.obj");*/
+	slideModel = new Model("../model/spiral-slide/spiral-slide.obj");
 
 	pathSegments = new Path();
 
@@ -82,6 +90,9 @@ Scene::~Scene()
 	// Deallocation of Resources
 	delete myShader;
 	glDeleteVertexArrays(1, &VAO);
+	delete fenceModel;
+	delete jungleGymModel;
+	delete domeModel;
 	delete slideModel;
 	delete pathSegments;
 	for (size_t i = 0; i < benches.size(); i++)
@@ -89,6 +100,26 @@ Scene::~Scene()
 		delete benches[i];
 	}
 	delete ss;
+	delete roundabout;
+	delete swing;
+}
+
+// Toggle time
+void Scene::toggleTime()
+{
+	paused = !paused;
+}
+
+// Slow down time
+void Scene::slowDownTime()
+{
+	timescale = max(0.0f, timescale - 0.2f);
+}
+
+// Speed up time
+void Scene::speedUpTime()
+{
+	timescale = min(10.0f, timescale + 0.2f);
 }
 
 // Change camera movement speed
@@ -144,24 +175,11 @@ void Scene::pan(float xoffset, float yoffset)
 	cameraFront = front;
 }
 
-// Roll to the left
-void Scene::rollLeft()
-{
-
-}
-
-// Roll to the right
-void Scene::rollRight()
-{
-
-}
-
 // Draw object from arguments
 void Scene::drawObject(Mesh mesh, glm::mat4 model, glm::vec3 colorVector)
 {
 	vector<Vertex> vertices = mesh.vertices;
 	vector<unsigned int> indices = mesh.indices;
-	glm::vec3 lightPos(0.0f, WORLD_H * 5.0f, 0.0f);
 
 	unsigned int VBO, EBO;
 	glGenBuffers(1, &VBO);
@@ -189,6 +207,15 @@ void Scene::drawObject(Mesh mesh, glm::mat4 model, glm::vec3 colorVector)
 	glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 	glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
+	float sunX = WORLD_W * 5.0f * sin(glm::radians(time));
+	float sunY = WORLD_W * 5.0f * cos(glm::radians(time));
+	glm::vec3 lightPos = glm::vec3(sunX, sunY, 0.0f);
+	glm::vec3 lightColor = glm::vec3(cos(glm::radians(time)), cos(glm::radians(time)), cos(glm::radians(time)));
+	if (cos(glm::radians(time)) < 0.3f)
+	{
+		lightColor = glm::vec3(0.3f, 0.3f, 0.3f);
+	}
+
 	unsigned int lightPosLoc = glGetUniformLocation(myShader->ID, "lightPos");
 	unsigned int viewPosLoc = glGetUniformLocation(myShader->ID, "viewPos");
 	unsigned int lightColorLoc = glGetUniformLocation(myShader->ID, "lightColor");
@@ -196,7 +223,7 @@ void Scene::drawObject(Mesh mesh, glm::mat4 model, glm::vec3 colorVector)
 
 	glUniform3f(lightPosLoc, lightPos.x, lightPos.y, lightPos.z);
 	glUniform3f(viewPosLoc, cameraPos.x, cameraPos.y, cameraPos.z);
-	glUniform3f(lightColorLoc, 1.0f, 1.0f, 1.0f);
+	glUniform3f(lightColorLoc, lightColor.x, lightColor.y, lightColor.z);
 	glUniform3f(objectColorLoc, colorVector.x, colorVector.y, colorVector.z);
 
 	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
@@ -374,12 +401,27 @@ void Scene::drawObjects()
 	drawSeeSaws();
 	drawRoundabout();
 	drawSwing();
-	/*for (unsigned int i = 0; i < jungleGymModel->meshes.size(); i++)
+	for (unsigned int i = 0; i < fenceModel->meshes.size(); i++)
 	{
 		glm::mat4 model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(-100.0f, 0.0f, -250.0f));
-		model = glm::scale(model, glm::vec3(45.0f, 45.0f, 45.0f));
+		model = glm::translate(model, glm::vec3(-1500.0f, 0.0f, -1000.0f));
+		model = glm::scale(model, glm::vec3(10.0f, 7.0f, 10.0f));
+		model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		drawObject(fenceModel->meshes[i], model, glm::vec3(0.9f, 0.9f, 0.8f));
+	}
+	for (unsigned int i = 0; i < jungleGymModel->meshes.size(); i++)
+	{
+		glm::mat4 model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(-1000.0f, 0.0f, -350.0f));
+		model = glm::scale(model, glm::vec3(38.0f, 38.0f, 38.0f));
 		drawObject(jungleGymModel->meshes[i], model, colors[i]);
+	}
+	for (unsigned int i = 0; i < domeModel->meshes.size(); i++)
+	{
+		glm::mat4 model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(-850.0f, 0.0f, 400.0f));
+		model = glm::scale(model, glm::vec3(110.0f, 110.0f, 110.0f));
+		drawObject(domeModel->meshes[i], model, colors[i]);
 	}
 	for (unsigned int i = 0; i < slideModel->meshes.size(); i++)
 	{
@@ -388,11 +430,4 @@ void Scene::drawObjects()
 		model = glm::scale(model, glm::vec3(45.0f, 45.0f, 45.0f));
 		drawObject(slideModel->meshes[i], model, colors[i]);
 	}
-	for (unsigned int i = 0; i < domeModel->meshes.size(); i++)
-	{
-		glm::mat4 model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(-100.0f, 0.0f, -250.0f));
-		model = glm::scale(model, glm::vec3(45.0f, 45.0f, 45.0f));
-		drawObject(domeModel->meshes[i], model, colors[i]);
-	}*/
 }

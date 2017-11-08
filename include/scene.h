@@ -32,6 +32,15 @@ public:
 	// The Vertex Array Object to draw from
 	unsigned int VAO;
 
+	// In-Program time
+	float time;
+
+	// Timescale measure for day-night cycle
+	float timescale;
+
+	// Time pause state
+	bool paused;
+
 	// Base camera movement speed
 	float cameraSpeed;
 
@@ -50,6 +59,9 @@ public:
 
 	// Projection matrix
 	glm::mat4 projection;
+
+	// Fence model (made in Blender)
+	Model* fenceModel;
 
 	// Jungle gym model (made in Blender)
 	Model* jungleGymModel;
@@ -84,6 +96,15 @@ public:
 	// Destructor
 	~Scene();
 
+	// Toggle time
+	void toggleTime();
+
+	// Slow down time
+	void slowDownTime();
+
+	// Speed up time
+	void speedUpTime();
+
 	// Change camera movement speed
 	void changeSpeed(float by);
 
@@ -101,12 +122,6 @@ public:
 	
 	// Pan the camera
 	void pan(float xoffset, float yoffset);
-
-	// Roll to the left
-	void rollLeft();
-
-	// Roll to the right
-	void rollRight();
 
 	// Draw the ground
 	void drawTerrain();
