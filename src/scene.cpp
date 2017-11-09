@@ -71,10 +71,10 @@ Scene::Scene()
 
 	colors["red"] = glm::vec3(0.778f, 0.040f, 0.040f);
 	colors["blue"] = glm::vec3(0.000f, 0.000f, 0.700f);
-	colors["green"] = glm::vec3(0.114f, 0.350f, 0.065f);
+	colors["green"] = glm::vec3(0.065f, 0.350f, 0.065f);
 	colors["yellow"] = glm::vec3(0.976f, 0.890f, 0.086f);
 	colors["orange"] = glm::vec3(0.837f, 0.279f, 0.010f);
-	colors["black"] = glm::vec3(0.050f, 0.050f, 0.050f);
+	colors["black"] = glm::vec3(0.010f, 0.010f, 0.010f);
 	colors["white"] = glm::vec3(0.900f, 0.900f, 0.800f);
 	colors["wood"] = glm::vec3(0.400f, 0.200f, 0.000f);
 	colors["metal"] = glm::vec3(0.270f, 0.290f, 0.318f);
@@ -118,7 +118,7 @@ void Scene::slowDownTime()
 // Speed up time
 void Scene::speedUpTime()
 {
-	timescale = min(50.0f, timescale + 2.0f);
+	timescale = min(100.0f, timescale + 2.0f);
 }
 
 // Change camera movement speed

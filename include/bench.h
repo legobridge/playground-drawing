@@ -15,5 +15,6 @@ public:
 	std::vector<Mesh> meshesm;
 	std::vector<glm::mat4> modelsm;
 
+	// Constructor
 	Bench(float angle);
 };

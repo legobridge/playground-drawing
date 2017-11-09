@@ -1,6 +1,6 @@
 // Main Source File for drawing a playground in OpenGL
 // Authors -  Asutosh Sistla, Kushal Agrawal, Suchit Kar
-// Date of Completion - 
+// Date of Completion - 09/11/2017
 
 #include <iostream>
 #include "glad/glad.h"
@@ -18,7 +18,7 @@ const unsigned int SCR_MIN_H = 360;
 const unsigned int SCR_MAX_W = 1366;
 const unsigned int SCR_MAX_H = 768;
 const float MOUSE_SENSITIVITY = 0.2f;
-const char* WINDOW_TITLE = "OpenGL Drawing";
+const char* WINDOW_TITLE = "Playground";
 
 // Mouse cursor positions
 float lastX = SCR_W / 2;
@@ -39,13 +39,13 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 // **************************************
 // ********* Keypress Processing ********
 // - Esc key closes the window
-// - W key 
-// - S key
-// - A key 
-// - D key
-// - P key
-// - [ key
-// - ] key
+// - W key moves camera forward
+// - S key moves camera backward
+// - A key makes camera strafe left
+// - D key makes camera strafe right
+// - P key pauses the day/night cycle
+// - [ key slows down the day/night cycle
+// - ] key speeds up the day/night cycle
 // **************************************
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
@@ -85,10 +85,8 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
 // **************************************
 // ********** Mouse Processing **********
-// - Mouse Up
-// - Mouse Down
-// - Mouse Left
-// - Mouse Right
+// - Moving the mouse pans the screen in
+//   the direction of mouse movement
 // **************************************
 void cursor_pos_callback(GLFWwindow* window, double xpos, double ypos)
 {
@@ -107,8 +105,8 @@ void cursor_pos_callback(GLFWwindow* window, double xpos, double ypos)
 
 // **************************************
 // ********** Mouse Processing **********
-// - Scroll Up
-// - Scroll Down
+// - Scroll Up increases camera speed
+// - Scroll Down decreases camera speed
 // **************************************
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
