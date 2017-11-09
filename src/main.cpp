@@ -190,6 +190,8 @@ int main()
 	// Avoid cursor jump
 	glfwSetCursorPos(window, lastX, lastY);
 
+	float prev = (float)glfwGetTime();
+
 	// **************** Render Loop ****************
 	while (!glfwWindowShouldClose(window))
 	{
@@ -197,13 +199,18 @@ int main()
 
 		// Clear buffers
 		float add = 0.0f;
+		float cur = (float)glfwGetTime();
+		float deltaTime = cur - prev;
+		prev = cur;
+
 		if (!myScene->paused)
 		{
-			add = myScene->timescale;
+			add = deltaTime * myScene->timescale;
 		}
 		myScene->time += add;
 		float c = max(0.1f, (float)cos(glm::radians(myScene->time)));
 		glm::vec3 backgroundColor = glm::vec3(0.404f * c, 0.684f * c, 0.900f * c);
+
 		glClearColor(backgroundColor.x, backgroundColor.y, backgroundColor.z, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
