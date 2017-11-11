@@ -17,21 +17,15 @@ Path::Path()
 	meshes.push_back(roadSegment);
 	models.push_back(model);
 
-	roadSegment = shape::getCuboidalMesh(2000.0f, 10.0f, 100.0f);
+	roadSegment = shape::getCuboidalMesh(100.0f, 10.0f, 600.0f);
 	model = glm::mat4(1.0f);
-	model = glm::translate(model, glm::vec3(100.0f, 0.0f, 650.0f));
+	model = glm::translate(model, glm::vec3(-450.0f, 0.0f, 400.0f));
 	meshes.push_back(roadSegment);
 	models.push_back(model);
 
-	roadSegment = shape::getCuboidalMesh(100.0f, 10.0f, 500.0f);
+	roadSegment = shape::getCuboidalMesh(100.0f, 10.0f, 300.0f);
 	model = glm::mat4(1.0f);
-	model = glm::translate(model, glm::vec3(-450.0f, 0.0f, 350.0f));
-	meshes.push_back(roadSegment);
-	models.push_back(model);
-
-	roadSegment = shape::getCuboidalMesh(100.0f, 10.0f, 200.0f);
-	model = glm::mat4(1.0f);
-	model = glm::translate(model, glm::vec3(1050.0f, 0.0f, 500.0f));
+	model = glm::translate(model, glm::vec3(1050.0f, 0.0f, 550.0f));
 	meshes.push_back(roadSegment);
 	models.push_back(model);
 
@@ -79,7 +73,7 @@ Path::Path()
 
 	roadSegment = shape::getCuboidalMesh(500.0f, 10.0f, 100.0f);
 	model = glm::mat4(1.0f);
-	model = glm::translate(model, glm::vec3(-950.0f, 0.0f, -250.0f));
+	model = glm::translate(model, glm::vec3(-950.0f, 0.0f, -50.0f));
 	meshes.push_back(roadSegment);
 	models.push_back(model);
 

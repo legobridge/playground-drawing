@@ -17,7 +17,7 @@ class Mesh
 {
 public:
 
-	/*  Mesh Data  */
+	// Mesh Data
 	std::vector<Vertex> vertices;
 	std::vector<unsigned int> indices;
 

@@ -19,5 +19,6 @@ public:
 	std::vector<Mesh> meshes_rope;
 	std::vector<glm::mat4> models_rope;
 
+	// Constructor
 	Swing();
 };

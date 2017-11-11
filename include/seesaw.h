@@ -19,5 +19,6 @@ public:
 	std::vector<Mesh> meshes_base;
 	std::vector<glm::mat4> models_base;
 
+	// Constructor
 	SeeSaw();
 };

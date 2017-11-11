@@ -11,7 +11,7 @@ Model::Model(char *path)
 void Model::loadModel(string path)
 {
 	Assimp::Importer import;
-	const aiScene *scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
+	const aiScene *scene = import.ReadFile(path, aiProcess_Triangulate);
 
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 	{
@@ -45,7 +45,7 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
 	for (unsigned int i = 0; i < mesh->mNumVertices; i++)
 	{
 		Vertex vertex;
-		// Process vertex positions, normals and texture coordinates
+		// Process vertex positions
 		glm::vec3 v;
 		v.x = mesh->mVertices[i].x;
 		v.y = mesh->mVertices[i].y;
@@ -67,5 +67,19 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
 			indices.push_back(face.mIndices[j]);
 		}
 	}
+
+	/*for (size_t i = 0; i < indices.size(); i += 3)
+	{
+		glm::vec3 faceNormal = glm::normalize(glm::cross(vertices[indices[i + 1]].Position - vertices[indices[i]].Position, vertices[indices[i + 2]].Position - vertices[indices[i]].Position));
+		vertices[indices[i]].Normal += faceNormal;
+		vertices[indices[i + 1]].Normal += faceNormal;
+		vertices[indices[i + 2]].Normal += faceNormal;
+	}
+
+	for (size_t i = 0; i < vertices.size(); i++)
+	{
+		vertices[i].Normal = glm::normalize(vertices[i].Normal);
+	}*/
+
 	return Mesh(vertices, indices);
 }

@@ -7,8 +7,10 @@
 class Path
 {
 public:
+	// Vectors of path segments
 	std::vector<Mesh> meshes;
 	std::vector<glm::mat4> models;
 
+	// Constructor
 	Path();
 };

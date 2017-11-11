@@ -19,5 +19,6 @@ public:
 	Mesh meshp;
 	glm::mat4 modelp;
 
+	// Constructor
 	Roundabout();
 };

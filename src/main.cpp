@@ -1,6 +1,6 @@
 // Main Source File for drawing a playground in OpenGL
 // Authors -  Asutosh Sistla, Kushal Agrawal, Suchit Kar
-// Date of Completion - 
+// Date of Completion - 09/11/2017
 
 #include <iostream>
 #include "glad/glad.h"
@@ -18,7 +18,7 @@ const unsigned int SCR_MIN_H = 360;
 const unsigned int SCR_MAX_W = 1366;
 const unsigned int SCR_MAX_H = 768;
 const float MOUSE_SENSITIVITY = 0.2f;
-const char* WINDOW_TITLE = "OpenGL Drawing";
+const char* WINDOW_TITLE = "Playground";
 
 // Mouse cursor positions
 float lastX = SCR_W / 2;
@@ -39,12 +39,13 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 // **************************************
 // ********* Keypress Processing ********
 // - Esc key closes the window
-// - Left key 
-// - Right key
-// - W key 
-// - S key
-// - A key 
-// - D key
+// - W key moves camera forward
+// - S key moves camera backward
+// - A key makes camera strafe left
+// - D key makes camera strafe right
+// - P key pauses the day/night cycle
+// - [ key slows down the day/night cycle
+// - ] key speeds up the day/night cycle
 // **************************************
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
@@ -68,23 +69,24 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	{
 		myScene->strafeRight();
 	}
-	if (key == GLFW_KEY_LEFT && (action == GLFW_REPEAT || action == GLFW_PRESS))
+	if (key == GLFW_KEY_P && (action == GLFW_REPEAT || action == GLFW_PRESS))
 	{
-		myScene->rollLeft();
+		myScene->toggleTime();
 	}
-	if (key == GLFW_KEY_RIGHT && (action == GLFW_REPEAT || action == GLFW_PRESS))
+	if (key == GLFW_KEY_LEFT_BRACKET && (action == GLFW_REPEAT || action == GLFW_PRESS))
 	{
-		myScene->rollRight();
+		myScene->slowDownTime();
 	}
-	// printf("%f %f %f\n", myScene->cameraPos.x, myScene->cameraPos.y, myScene->cameraPos.z);
+	if (key == GLFW_KEY_RIGHT_BRACKET && (action == GLFW_REPEAT || action == GLFW_PRESS))
+	{
+		myScene->speedUpTime();
+	}
 }
 
 // **************************************
 // ********** Mouse Processing **********
-// - Mouse Up
-// - Mouse Down
-// - Mouse Left
-// - Mouse Right
+// - Moving the mouse pans the screen in
+//   the direction of mouse movement
 // **************************************
 void cursor_pos_callback(GLFWwindow* window, double xpos, double ypos)
 {
@@ -103,12 +105,12 @@ void cursor_pos_callback(GLFWwindow* window, double xpos, double ypos)
 
 // **************************************
 // ********** Mouse Processing **********
-// - Scroll Up
-// - Scroll Down
+// - Scroll Up increases camera speed
+// - Scroll Down decreases camera speed
 // **************************************
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
-	myScene->changeSpeed(yoffset);
+	myScene->changeSpeed((float)yoffset);
 }
 
 // OpenGL Initialization
@@ -186,13 +188,28 @@ int main()
 	// Avoid cursor jump
 	glfwSetCursorPos(window, lastX, lastY);
 
+	float prev = (float)glfwGetTime();
+
 	// **************** Render Loop ****************
 	while (!glfwWindowShouldClose(window))
 	{
 		// ******** Rendering Commands ********
 
 		// Clear buffers
-		glClearColor(0.404f, 0.784f, 1.0f, 1.0f);
+		float add = 0.0f;
+		float cur = (float)glfwGetTime();
+		float deltaTime = cur - prev;
+		prev = cur;
+
+		if (!myScene->paused)
+		{
+			add = deltaTime * myScene->timescale;
+		}
+		myScene->time += add;
+		float c = max(0.1f, (float)cos(glm::radians(myScene->time)));
+		glm::vec3 backgroundColor = glm::vec3(0.404f * c, 0.684f * c, 0.900f * c);
+
+		glClearColor(backgroundColor.x, backgroundColor.y, backgroundColor.z, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// Draw objects

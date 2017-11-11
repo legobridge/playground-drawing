@@ -12,8 +12,12 @@
 class Model
 {
 public:
+	// Vector of meshes
 	std::vector<Mesh> meshes;
+
+	// Constructor
 	Model(char *path);
+
 private:
 	void loadModel(std::string path);
 	void processNode(aiNode *node, const aiScene *scene);
