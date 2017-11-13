@@ -441,10 +441,10 @@ void Scene::drawSpiralSlide()
 {
 	vector<glm::vec3> meshColors(slideModel->meshes.size(), glm::vec3(0.0f, 0.0f, 0.0f));
 	meshColors[0] = colors["green"];
-	meshColors[2] = colors["metal"];
-	meshColors[6] = colors["blue"];
-	meshColors[7] = colors["yellow"];
-	meshColors[8] = colors["red"];
+	meshColors[1] = colors["metal"];
+	meshColors[2] = colors["blue"];
+	meshColors[3] = colors["yellow"];
+	meshColors[4] = colors["red"];
 	for (unsigned int i = 0; i < slideModel->meshes.size(); i++)
 	{
 		glm::mat4 model = glm::mat4(1.0f);

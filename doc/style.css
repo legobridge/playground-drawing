@@ -48,12 +48,13 @@ h4 {
 p {
     padding: 5px;
     padding-left: 35px;
+    padding-bottom: 15px;
     font-size: 15px;
 }
 
 p.bold {
     padding: 5px;
-    padding-left: 30px;    
+    padding-left: 30px;
     font-size: 15px;
     font-weight: bold;
 }

@@ -43,7 +43,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 // - S key moves camera backward
 // - A key makes camera strafe left
 // - D key makes camera strafe right
-// - P key pauses the day/night cycle
+// - P key toggles the day/night cycle
 // - [ key slows down the day/night cycle
 // - ] key speeds up the day/night cycle
 // **************************************

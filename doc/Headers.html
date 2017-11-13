@@ -6,7 +6,7 @@
     <body>
         <h1>Documentation</h1>
 
-        <a href="./overview.html"><btn>|| Go Back ||</btn></a>    
+        <a href="./overview.html"><btn>|| Go Back ||</btn></a>
 
         <h2>Header Files</h2>
 
@@ -19,11 +19,11 @@
         <p class="bold">std::vector<Mesh> meshesw</p>
         <p>Mesh of wooden parts of the bench</p>	
         <p class="bold">std::vector<glm::mat4> modelsw</p>
-        <p>Dimensions of wooden parts of the bench</p>
+        <p>Model matrix wooden parts of the bench</p>
         <p class="bold">std::vector<Mesh> meshesm</p>
         <p>Mesh of metallic parts of the bench</p>
         <p class="bold">std::vector<glm::mat4> modelsm</p>
-        <p>Dimensions of wooden parts of the bench</p>
+        <p>Model matrix wooden parts of the bench</p>
         <br><hr><br>
 
         <br><h3 id=mesh>| mesh.h</h3>
@@ -41,7 +41,7 @@
 
         <br><h3 id=model>| model.h</h3>
         <p class="bold">class Model</p>
-        <p>Generates a model</p>
+        <p>Generates a model of class Mesh</p>
         <h4>|| Constructor</h4>
         <p class="bold">Model(char *path)</p>
         <h4>|| Member Fields</h4>
@@ -50,7 +50,6 @@
         <p class="bold">void loadModel(std::string path)</p>	
         <p class="bold">void processNode(aiNode *node, const aiScene *scene)</p>
         <p class="bold">processMesh(aiMesh *mesh, const aiScene *scene)</p>
-        <p>of class Mesh</p>
         <br><hr><br>     
 
         <br><h3 id=path>| path.h</h3>
@@ -65,21 +64,21 @@
 
         <br><h3 id=roundabout>| roundabout.h</h3>
         <p class="bold">class Roundabout</p>
-        <p>Creates a roundabout.</p>
+        <p>Creates a roundabout</p>
         <h4>|| Constructor</h4>
         <p class="bold">Roundabout()</p>
         <h4>|| Member Fields</h4>
         <p class="bold">glm::mat4 modelb</p>
         <p>To create the base</p>
         <p class="bold">glm::mat4 modelp</p>
-        <p>To create the central pole.</p>
+        <p>To create the central pole</p>
         <p class="bold">std::vector<Mesh> meshesh</p>
         <p class="bold">std::vector<glm::mat4> modelsh</p>
-        <p>To create the handles.</p>
+        <p>To create the handles</p>
         <p class="bold">Mesh meshb</p>
-        <p>Generates base object.</p>
+        <p>Generates base object</p>
         <p class="bold">Mesh meshp</p>
-        <p>Generates pole object.</p>
+        <p>Generates pole object</p>
         <br><hr><br>
         
         <br><h3 id=scene>| scene.h</h3>
@@ -182,15 +181,15 @@
         <p class="bold">std::vector<Mesh> meshesw</p>
         <p>Mesh of wooden parts of the see-saw</p>	
         <p class="bold">std::vector<glm::mat4> modelsw</p>
-        <p>Dimensions of wooden parts of the see-saw</p>
+        <p>Model matrix wooden parts of the see-saw</p>
         <p class="bold">std::vector<Mesh> meshesm</p>
         <p>Mesh of metallic parts of the see-saw</p>
         <p class="bold">std::vector<glm::mat4> modelsm</p>
-        <p>Dimensions of wooden parts of the see-saw</p>
+        <p>Model matrix wooden parts of the see-saw</p>
         <p class="bold">std::vector<Mesh> meshes_base</p>
         <p>Mesh of the base</p>
         <p class="bold">std::vector<glm::mat4> models_base</p>
-        <p>Dimensions of the base</p>
+        <p>Model matrix the base</p>
         <br><hr><br>
         
         <br><h3 id=shader>| shader.h</h3>
@@ -214,15 +213,15 @@
         <p class="bold">std::vector<Mesh> meshesw</p>
         <p>Mesh of wooden parts of the swing</p>	
         <p class="bold">std::vector<glm::mat4> modelsw</p>
-        <p>Dimensions of wooden parts of the swing</p>
+        <p>Model matrix wooden parts of the swing</p>
         <p class="bold">std::vector<Mesh> meshesm</p>
         <p>Mesh of metallic parts of the swing</p>
         <p class="bold">std::vector<glm::mat4> modelsm</p>
-        <p>Dimensions of wooden parts of the swing</p>
+        <p>Model matrix wooden parts of the swing</p>
         <p class="bold">std::vector<Mesh> meshes_rope</p>
         <p>Mesh of the rope</p>
         <p class="bold">std::vector<glm::mat4> models_rope</p>
-        <p>Dimensions of the rope</p>
+        <p>Model matrix the rope</p>
         <br><hr><br>
         <a href="./headers.html"><btn>|| Back to Top ||</btn></a>
 
