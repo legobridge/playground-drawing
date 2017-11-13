@@ -209,11 +209,21 @@ void Scene::drawObject(Mesh mesh, glm::mat4 model, glm::vec3 colorVector)
 	float sunX = WORLD_W * 5.0f * sin(glm::radians(time));
 	float sunY = WORLD_W * 5.0f * cos(glm::radians(time));
 	glm::vec3 lightPos = glm::vec3(sunX, sunY, 0.0f);
-	glm::vec3 lightColor = glm::vec3(cos(glm::radians(time)), cos(glm::radians(time)), cos(glm::radians(time)));
-	if (cos(glm::radians(time)) < 0.3f)
+	long long lightAngle = (((long long)(time)) % 360);
+	float lightVal = 0.1f;
+	if (lightAngle > 340 || lightAngle < 20)
 	{
-		lightColor = glm::vec3(0.3f, 0.3f, 0.3f);
+		lightVal = 1.0f;
 	}
+	else if (lightAngle < 110)
+	{
+		lightVal = max(0.1f, (110.0f - lightAngle) / 90.0f);
+	}
+	else if (lightAngle > 250)
+	{
+		lightVal = max(0.1f, (lightAngle - 270.0f) / 90.0f);
+	}
+	glm::vec3 lightColor = glm::vec3(lightVal, lightVal, lightVal);
 
 	unsigned int lightPosLoc = glGetUniformLocation(myShader->ID, "lightPos");
 	unsigned int viewPosLoc = glGetUniformLocation(myShader->ID, "viewPos");
@@ -435,7 +445,7 @@ void Scene::drawSpiralSlide()
 	meshColors[6] = colors["blue"];
 	meshColors[7] = colors["yellow"];
 	meshColors[8] = colors["red"];
-	for (unsigned int i = 0; i < 9; i++)
+	for (unsigned int i = 0; i < slideModel->meshes.size(); i++)
 	{
 		glm::mat4 model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(-100.0f, 0.0f, -250.0f));
