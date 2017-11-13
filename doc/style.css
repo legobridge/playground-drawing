@@ -87,5 +87,6 @@ btn:hover{
 img {
     margin: 10px;
     border-radius: 4px;
+    max-width: 100%;
     border: 2px solid #ababab;
 }
