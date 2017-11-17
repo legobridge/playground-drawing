@@ -209,20 +209,7 @@ void Scene::drawObject(Mesh mesh, glm::mat4 model, glm::vec3 colorVector)
 	float sunX = WORLD_W * 5.0f * sin(glm::radians(time));
 	float sunY = WORLD_W * 5.0f * cos(glm::radians(time));
 	glm::vec3 lightPos = glm::vec3(sunX, sunY, 0.0f);
-	long long lightAngle = (((long long)(time)) % 360);
-	float lightVal = 0.1f;
-	if (lightAngle > 340 || lightAngle < 20)
-	{
-		lightVal = 1.0f;
-	}
-	else if (lightAngle < 110)
-	{
-		lightVal = max(0.1f, (110.0f - lightAngle) / 90.0f);
-	}
-	else if (lightAngle > 250)
-	{
-		lightVal = max(0.1f, (lightAngle - 270.0f) / 90.0f);
-	}
+	float lightVal = max(0.1f, cos(glm::radians(time)));
 	glm::vec3 lightColor = glm::vec3(lightVal, lightVal, lightVal);
 
 	unsigned int lightPosLoc = glGetUniformLocation(myShader->ID, "lightPos");
