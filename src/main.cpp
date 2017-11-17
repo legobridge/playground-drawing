@@ -166,7 +166,12 @@ bool initializeOpenGL()
 		return false;
 	}
 
+	// Enable depth testing
 	glEnable(GL_DEPTH_TEST);
+
+	// Enable backface culling
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
 
 	// Viewport Settings
 	glViewport(0, 0, SCR_W, SCR_H);
