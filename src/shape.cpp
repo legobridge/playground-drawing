@@ -179,8 +179,8 @@ namespace shape
 			unsigned int first2 = 2 + points + i;
 			unsigned int second2 = (2 + points + i + 1 < 2 + points + points) ? (2 + points + i + 1) : (2 + points);
 			indices.push_back(1);
-			indices.push_back(first2);
 			indices.push_back(second2);
+			indices.push_back(first2);
 
 			indices.push_back(first1);
 			indices.push_back(first2);
